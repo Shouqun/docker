@@ -14,7 +14,7 @@ docker rmi -f xxx
 # Run docker
 
 ```bash
-docker run -it -v /Users/xxx/Code/Browser/docker/data:/data -p 8022:22/tcp -p 8080:80/tcp chromium-android:1.0
+docker run -it -v /Users/xxx/Code/Browser/docker/data:/data:delegated -p 8022:22/tcp -p 8080:80/tcp chromium-android:1.0
 ```
 
 # Attach/detach to container
