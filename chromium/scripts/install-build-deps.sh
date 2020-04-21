@@ -130,9 +130,9 @@ if [ "x$(id -u)" != x0 ] && [ 0 -eq "${do_quick_check-0}" ]; then
 fi
 
 if [ "$do_inst_lib32" = "1" ] || [ "$do_inst_nacl" = "1" ]; then
-  sudo dpkg --add-architecture i386
+  dpkg --add-architecture i386
 fi
-sudo apt-get update
+apt-get update
 
 # Populate ${apt_package_list} for package_exists() parsing.
 apt_package_list=$(build_apt_package_list)
@@ -371,9 +371,9 @@ case $distro_codename in
       else
         if [ "${add_cross_tool_repo}" = "1" ]; then
           gpg --keyserver pgp.mit.edu --recv-keys ${EM_ARCHIVE_KEY_FINGER}
-          gpg -a --export ${EM_ARCHIVE_KEY_FINGER} | sudo apt-key add -
+          gpg -a --export ${EM_ARCHIVE_KEY_FINGER} | apt-key add -
           if ! grep "^${EM_REPO}" "${CROSSTOOLS_LIST}" &>/dev/null; then
-            echo "${EM_SOURCE}" | sudo tee -a "${CROSSTOOLS_LIST}" >/dev/null
+            echo "${EM_SOURCE}" | tee -a "${CROSSTOOLS_LIST}" >/dev/null
           fi
           arm_list+=" ${GPP_ARM_PACKAGE}"
         else
@@ -688,7 +688,7 @@ if cmd_output="$(LANGUAGE=en LANG=C $query_cmd)"; then
     echo "No missing packages, and the packages are up to date."
   else
     echo "Installing and upgrading packages: $new_list $upgrade_list."
-    sudo apt-get install ${do_quietly-} ${new_list} ${upgrade_list}
+    apt-get install ${do_quietly-} ${new_list} ${upgrade_list}
   fi
   echo
 else
@@ -712,7 +712,7 @@ if [ "$do_inst_chromeos_fonts" != "0" ]; then
   echo
   echo "Installing Chrome OS fonts."
   dir=`echo $0 | sed -r -e 's/\/[^/]+$//'`
-  if ! sudo $dir/linux/install-chromeos-fonts.py; then
+  if ! $dir/linux/install-chromeos-fonts.py; then
     echo "ERROR: The installation of the Chrome OS default fonts failed."
     if [ `stat -f -c %T $dir` == "nfs" ]; then
       echo "The reason is that your repo is installed on a remote file system."
@@ -734,16 +734,16 @@ LOCALE_GEN=/etc/locale.gen
 if [ -e ${LOCALE_GEN} ]; then
   OLD_LOCALE_GEN="$(cat /etc/locale.gen)"
   for CHROMIUM_LOCALE in ${CHROMIUM_LOCALES}; do
-    sudo sed -i "s/^# ${CHROMIUM_LOCALE}/${CHROMIUM_LOCALE}/" ${LOCALE_GEN}
+    sed -i "s/^# ${CHROMIUM_LOCALE}/${CHROMIUM_LOCALE}/" ${LOCALE_GEN}
   done
   # Regenerating locales can take a while, so only do it if we need to.
   if (echo "${OLD_LOCALE_GEN}" | cmp -s ${LOCALE_GEN}); then
     echo "Locales already up-to-date."
   else
-    sudo locale-gen
+    locale-gen
   fi
 else
   for CHROMIUM_LOCALE in ${CHROMIUM_LOCALES}; do
-    sudo locale-gen ${CHROMIUM_LOCALE}
+    locale-gen ${CHROMIUM_LOCALE}
   done
 fi
